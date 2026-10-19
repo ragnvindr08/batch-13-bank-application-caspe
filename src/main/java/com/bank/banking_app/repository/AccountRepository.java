@@ -1,9 +1,7 @@
 package com.bank.banking_app.repository;
 
 import com.bank.banking_app.model.Account;
-import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -24,9 +22,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     // Spring builds: ... ORDER BY account_number ASC
     List<Account> findAllByOrderByAccountNumberAsc();
 
-    // PESSIMISTIC_WRITE = SELECT ... FOR UPDATE.
-    // The row is locked until the transaction ends, so two users cannot change the same balance at once.
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT a FROM Account a WHERE a.accountNumber = :accountNumber")
+    // PESSIMISTIC_WRITE gagamit ng native query para gumana sa MariaDB / MySQL
+    @Query(value = "SELECT * FROM accounts WHERE account_number = :accountNumber FOR UPDATE", nativeQuery = true)
     Optional<Account> findForUpdate(@Param("accountNumber") String accountNumber);
 }
