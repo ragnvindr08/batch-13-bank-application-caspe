@@ -34,3 +34,5 @@ build/
 
 ### GUIDE ###
 .README.md
+
+.claude/
